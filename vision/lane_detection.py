@@ -15,7 +15,6 @@ def image_mask(img, arr_ver):
     
     # image mask
     mask = np.zeros_like(img)
-    
     # Checking no. of color channels
     if len(img.shape) > 2:
         channels = img.shape[2]
@@ -23,11 +22,31 @@ def image_mask(img, arr_ver):
     else:
         mask_color = 255
     
-    # fill the mask with white in the polygon region and black everywhere else 
-    cv2.fillPoly(mask, np.array([arr_ver], dtype=np.int32), mask_color)
+    #  arr = np.array(arr_ver, dtype=np.int32)
+    # print(arr)
     
+    width = img.shape[1]
+    height = img.shape[0]
+
+    left_line = np.polyfit([height, height/2], [0,width/2], 1)
+    right_line = np.polyfit([height,height/2], [width, width/2], 1)
+    
+    fl0 = np.poly1d(left_line)
+    fl1 = np.poly1d(right_line)
+    
+    for j in range(int(height/2), int(height)):
+        for i in range(int(fl0(j)),int(fl1(j))):
+            mask[j][i] = mask_color
+
+    # fill the mask with black everywhere else except the region
+    # cv2.fillPoly(mask, np.int_([arr]), color =  mask_color)    
     # reduces pixel value to zero wherever mask is zero
-    return cv2.bitwise_and(img,mask)
+
+    # img with canny edges only in bottom screen triangle
+    return_img =  cv2.bitwise_and(img,mask)
+    
+    cv2.imshow('img', return_img)
+    return return_img
 
 def plot_region(img):
     width = img.shape[1]
@@ -49,8 +68,8 @@ def hough_transform(img):
             )
 
 def draw_lines(img, lines, color = [255, 0, 0], thickness = 3, slope_threshold = 0.5):
-    if lines == None:
-        return
+    # if lines == None:
+    #     return
     
     left_line_x = []
     left_line_y = []
@@ -60,7 +79,7 @@ def draw_lines(img, lines, color = [255, 0, 0], thickness = 3, slope_threshold =
     line_image = np.copy(img)
 
     for line in lines:
-        for x0, y0, x1, x2 in line:
+        for x0, y0, x1, y1 in line:
             slope = (y1 - y0)/(x1 - x0)
             if abs(slope) < slope_threshold:
                 continue
@@ -98,26 +117,21 @@ def main():
     while vid.isOpened():
         
         ret, frame = vid.read()
-        print("image read")
+        
         gray = grayscale(frame)
-        print("grayscale works")
 
         canny_image = canny_edge(gray)
-        print("canny works")
-        cv2.imshow('canny', canny_image)
-
+        
         width = canny_image.shape[1]
         height = canny_image.shape[0]
+        
         region = [(0,0), (int(width/2),int(height/2)), (width,height)]
         mask_image = image_mask(canny_image, region)
-        print("mask works")
-        #cv2.imshow('mask', mask_image)
-
+        
         lines = hough_transform(mask_image)
-        print("hough works")
-
+        
+        print(lines)
         line_image = draw_lines(frame, lines)
-        print("draw lines works")
 
         #cv2.imshow('line_image',line_image)
         cv2.waitKey(1)
