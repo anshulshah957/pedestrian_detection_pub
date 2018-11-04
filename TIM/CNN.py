@@ -74,7 +74,7 @@ class Net(nn.Module):
 
 net = Net()
 
-if __name__ == '__main__':
+def train():
     ########################################################################
     # 3. Define a Loss function and optimizer
     # ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -123,3 +123,6 @@ if __name__ == '__main__':
 
     # Saves net state to PATH
     torch.save(net.state_dict(), PATH)
+
+if __name__ == '__main__':
+    train()
