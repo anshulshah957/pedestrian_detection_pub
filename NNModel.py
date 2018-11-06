@@ -1,6 +1,6 @@
 import torch
 import torch.nn as nn
-from torchvision.datasets import CIFAR10
+import torchvision.datasets as datasets
 from torchvision.transforms import transforms
 from torch.utils.data import DataLoader
 from torch.optim import Adam
@@ -9,12 +9,14 @@ import numpy as np
 #CITATION: ORIGINAL CODE FROM: https://heartbeat.fritz.ai/basics-of-image-classification-with-pytorch-2f8973c51864
 
 #To train for our data, load data using torchvision.datasets.ImageFolder() and set to train_set and test_set
+#Use PIL folder called data with test and train folders inside, and fodlers with class names in each
 #Have a train folder and a test folder, with subfolders for positive and negative samples
 
 height = 64
 width = 64
-classNum = 10
+classNum = 1
 batch_size = 32
+
 class Unit(nn.Module):
     def __init__(self,in_channels,out_channels):
         super(Unit,self).__init__()
@@ -35,7 +37,7 @@ class SimpleNet(nn.Module):
         super(SimpleNet,self).__init__()
 
         #Create 14 layers of the unit with max pooling in between
-        self.unit1 = Unit(in_channels=1,out_channels=32)
+        self.unit1 = Unit(in_channels=3,out_channels=32)
         self.unit2 = Unit(in_channels=32, out_channels=32)
         self.unit3 = Unit(in_channels=32, out_channels=32)
 
@@ -80,27 +82,26 @@ class SimpleNet(nn.Module):
 #Define transformations for the training set, flip the images randomly, crop out and apply mean and std normalization
 train_transformations = transforms.Compose([
     #transforms.ToPILImage(),
-    transforms.Grayscale(num_output_channels=1),
     transforms.RandomHorizontalFlip(),
     transforms.ToTensor(),
     transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))
 ])
 
 
-train_set = CIFAR10(root="./data",train=True,transform=train_transformations,download=True)
-train_loader = DataLoader(train_set,batch_size=batch_size,shuffle=True,num_workers=4)
-
 #Define transformations for the test set
 test_transformations = transforms.Compose([
     #transforms.ToPILImage(),
-    transforms.Grayscale(num_output_channels=1),
     transforms.ToTensor(),
     transforms.Normalize((0.5,0.5,0.5), (0.5,0.5,0.5))
 
 ])
 
-test_set = CIFAR10(root="./data",train=False,transform=test_transformations,download=True)
+train_set = datasets.ImageFolder(root = "./data/train", transform = train_transformations)
+train_loader = DataLoader(train_set,batch_size=batch_size,shuffle=True,num_workers=4)
+
+test_set = datasets.ImageFolder(root = "./data/test", transform = test_transformations)
 test_loader = DataLoader(test_set,batch_size=batch_size,shuffle=False,num_workers=4)
+
 
 #Check if gpu support is available
 cuda_avail = torch.cuda.is_available()
@@ -143,7 +144,7 @@ def test():
     model.eval()
     test_acc = 0.0
     for i, (images, labels) in enumerate(test_loader):
-      
+
         if cuda_avail:
                 images = Variable(images.cuda())
                 labels = Variable(labels.cuda())
@@ -212,4 +213,4 @@ def train(num_epochs):
 
 
 if __name__ == "__main__":
-    test()
+    train(200)
