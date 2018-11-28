@@ -211,6 +211,5 @@ def train(num_epochs):
         # Print the metrics
         print("Epoch {}, Train Accuracy: {} , TrainLoss: {} , Test Accuracy: {}".format(epoch, train_acc, train_loss,test_acc))
 
-
 if __name__ == "__main__":
     train(200)
