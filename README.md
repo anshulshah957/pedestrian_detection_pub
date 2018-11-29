@@ -16,6 +16,6 @@ Run the following python command in the darkflow directory:
 
 #### Tags
 `--model` different configurations are available in /cfg  
-`--load` different weights are available on [Darkflow](https://github.com/thtrieu/darkflow)  
+`--load` different weights are available on darkflow  
 `--demo` specifies the input video  
 `--saveVideo` saves the output video as video.avi (you might have to use a video converter like media.io to open)  
