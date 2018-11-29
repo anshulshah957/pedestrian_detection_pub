@@ -30,7 +30,7 @@ Run the following python command in the darkflow directory:
 `--saveVideo` saves the output video as video.avi (you might have to use a video converter like media.io to open)  
 
 ## Authors
-Ananmay Jain (project manager)
+Ananmay Jain (project manager)  
 Tim Baer  
 Thomas Mao  
 Anshul Shah
