@@ -15,7 +15,7 @@ Run the following python command in the darkflow directory:
 `flow --model cfg/yolo.cfg --load yolo.weights --demo testvid.mp4 --saveVideo`
 
 #### Tags
-`--model` different configurations are available in /cfg
-`--load` different weights are available on [Darkflow](https://github.com/thtrieu/darkflow)
-`--demo` specifies the input video
-`--saveVideo` saves the output video as video.avi (you might have to use a video converter like media.io to open)
+`--model` different configurations are available in /cfg  
+`--load` different weights are available on [Darkflow](https://github.com/thtrieu/darkflow)  
+`--demo` specifies the input video  
+`--saveVideo` saves the output video as video.avi (you might have to use a video converter like media.io to open)  
