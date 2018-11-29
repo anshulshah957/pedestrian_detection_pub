@@ -5,17 +5,25 @@ We use the YOLO framework to classify pedestrians, vehicles, traffic lights and 
 We apply our object detection algorithms to implement a "self-driving" car in GTAV that can detect the above objects and make simple decisions.
 
 ## Dependencies
-* [YOLO](https://pjreddie.com/darknet/yolo/)
-* [darkflow](https://github.com/thtrieu/darkflow)
+### [YOLO](https://pjreddie.com/darknet/yolo/)
+* ???
+
+### [darkflow](https://github.com/thtrieu/darkflow)
+* Python3
+* Tensorflow (requires Python 3.4, 3.5, or 3.6)
+* NumPy
+* OpenCV
 
 ### darkflow
 darkflow transfers darknet (and YOLO) to tensorflow.
+
+Download weights [here](https://drive.google.com/drive/folders/0B1tW_VtY7onidEwyQ2FtQVplWEU) and move to darkflow directory.
 
 Run the following python command in the darkflow directory:
 `flow --model cfg/yolo.cfg --load yolo.weights --demo testvid.mp4 --saveVideo`
 
 #### Tags
 `--model` different configurations are available in /cfg  
-`--load` different weights are available on darkflow GitHub 
+`--load` different weights are available on darkflow GitHub  
 `--demo` specifies the input video  
 `--saveVideo` saves the output video as video.avi (you might have to use a video converter like media.io to open)  
