@@ -27,3 +27,25 @@ Run the following python command in the darkflow directory:
 `--load` different weights are available on darkflow GitHub  
 `--demo` specifies the input video  
 `--saveVideo` saves the output video as video.avi (you might have to use a video converter like media.io to open)  
+
+## Authors
+Tim Baer  
+Ananmay Jain (project manager)  
+Thomas Mao  
+Anshul Shah
+
+## License
+This project is distributed under the MIT license - see the LICENSE.md file for more details
+
+## Acknowledgments
+Title: YOLOV3: An Incremental Improvement  
+Author: Redmon, Joseph, and Farhadi, Ali  
+Journal: arXiv  
+Year: 2018  
+Availability: https://pjreddie.com/darknet/yolo/
+
+Title: darkflow  
+Author: thtrieu and other contributors  
+Year: 2018  
+Availability: https://github.com/thtrieu/darkflow  
+
