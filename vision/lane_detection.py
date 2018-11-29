@@ -61,7 +61,7 @@ def hough_transform(img):
             img,
             rho = 6,
             theta = np.pi/60,
-            threshold = 160,
+            threshold = 600,
             lines = np.array([]),
                 minLineLength = 100,
             maxLineGap = 60
@@ -144,7 +144,9 @@ def draw_lines(img, lines, color = [0, 255, 0], thickness = 3, slope_threshold =
 
 def main():
     vid = cv2.VideoCapture('clip_highway_video.mp4')
-
+    frame_width = int(vid.get(3))
+    frame_height = int(vid.get(4))
+    out = cv2.VideoWriter('outpy.avi',cv2.VideoWriter_fourcc('M','J','P','G'), 20, (frame_width,frame_height))
     while vid.isOpened():
 
         ret, frame = vid.read()
@@ -160,20 +162,20 @@ def main():
         mask_image = image_mask(canny_image, region)
 
         lines = hough_transform(mask_image)
-       #
-       # for i in range(len(lines)):
-       #     cv2.line(frame,(lines[i][0][0], lines[i][0][1]),(lines[i][0][2], \
-       #             lines[i][0][3]),(0,255,0), 3)
-       #  for x1,y1,x2,y2 in lines[0]:
-       #      cv2.line(mask_image,(x1,y1),(x2,y2),(0,255,0),10)
-       # cv2.imshow('frame',frame)
-       #  line_image = draw_lines(mask_image,lines)
+        for i in range(len(lines)):
+            cv2.line(frame,(lines[i][0][0], lines[i][0][1]),(lines[i][0][2], \
+                    lines[i][0][3]),(0,255,0), 3)
+        for x1,y1,x2,y2 in lines[0]:
+            cv2.line(mask_image,(x1,y1),(x2,y2),(0,255,0),10)
+        cv2.imshow('frame',frame)
+        line_image = draw_lines(mask_image,lines)
         line_image = draw_lines(frame, lines)
-
+        out.write(line_image)
         cv2.imshow('line_image',line_image)
         cv2.waitKey(1)
 
     vid.release()
+    out.release()
     cv2.destrolAllWindows()
 
 if __name__ == '__main__':
