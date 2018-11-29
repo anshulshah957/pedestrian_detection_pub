@@ -1,6 +1,6 @@
 # pedestrian_detection
 
-We use the [YOLO](https://pjreddie.com/darknet/yolo/) framework to classify pedestrians, vehicles, traffic lights and other basic objects. In addition, we also implement other algorithms for lane detection and to further classify traffic lights as red, green, or yellow.
+We use the YOLO framework to classify pedestrians, vehicles, traffic lights and other basic objects. In addition, we also implement other algorithms for lane detection and to further classify traffic lights as red, green, or yellow.
 
 We apply our object detection algorithms to implement a "self-driving" car in GTAV that can detect the above objects and make simple decisions.
 
