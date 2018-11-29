@@ -13,6 +13,7 @@ We apply our object detection algorithms to implement a "self-driving" car in GT
 * Tensorflow (requires Python 3.4, 3.5, or 3.6)
 * NumPy
 * OpenCV
+* Cython
 
 ### darkflow
 darkflow transfers darknet (and YOLO) to tensorflow.
