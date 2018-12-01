@@ -12,7 +12,6 @@ def threshold(img):
 	newImg = img[:,:,0]
 	for i in range(0,img.shape[0]):
 		for j in range(0,img.shape[1]):
-			pixSum = int(img[i,j,0]) + int(img[i,j,1]) + int(img[i,j,2])
 			blue = img[i,j,0]
 			green = img[i,j,1]
 			red = img[i,j,2]
@@ -33,6 +32,7 @@ def threshold(img):
 	cv2.destroyAllWindows()
 	return newImg
 def getCircle(img):
+	img = threshold(img)
 	circles = cv2.HoughCircles(img, cv2.HOUGH_GRADIENT, 1, 75, param2 = 10)
 	output = img.copy()
 	retList = []
@@ -46,14 +46,22 @@ def getCircle(img):
 			retList.append(img[y][x])
 			cv2.circle(output, (x, y), r, (0, 255, 0), 4)
 			cv2.rectangle(output, (x - 5, y - 5), (x + 5, y + 5), (0, 128, 255), -1)
-	return retList
+	toRet = [False, False, False]
+	if len(retList) > 0:
+		if retList[0] == 240:
+			toRet[0] = True
+		elif retList[0] == 160:
+			toRet[1] = True
+		elif retList[0] == 80:
+			toRet[2] = True
+	return toRet
 	cv2.imshow("output", np.hstack([img, output]))
 	cv2.waitKey(0)
 	cv2.destroyAllWindows()
 
 
-img = cv2.imread('GTAYellowAndRed1.jpg',1)
-print(getCircle(threshold(img)))
+#img = cv2.imread('GTARed1.jpg',1)
+#print(getCircle(threshold(img)))
 
 
 

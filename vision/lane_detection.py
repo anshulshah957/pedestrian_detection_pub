@@ -178,5 +178,33 @@ def main():
     out.release()
     cv2.destrolAllWindows()
 
+def main2(frame):
+
+    gray = grayscale(frame)
+
+    canny_image = canny_edge(gray)
+
+    width = canny_image.shape[1]
+    height = canny_image.shape[0]
+
+    region = [(0,0), (int(width/2),int(height/2)), (width,height)]
+    mask_image = image_mask(canny_image, region)
+
+    lines = hough_transform(mask_image)
+    toReturn = []
+    for rho, theta in lines[0]:
+        a = np.cos(theta)
+        b = np.sin(theta)
+        x0 = a*rho
+        y0 = b*rho
+        x1 = int(x0 + 1000*(-b))
+        y1 = int(y0 + 1000*(a))
+        x2 = int(x0 - 1000*(-b))
+        y2 = int(y0 - 1000*(a))
+        toReturn.append([x1,y1,x2,y2])
+    return toReturn
+
+
+
 if __name__ == '__main__':
     main()
