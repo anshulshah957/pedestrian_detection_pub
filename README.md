@@ -9,7 +9,7 @@ We apply our object detection algorithms to implement a "self-driving" car in GT
 * OpenCV
 
 ### [darknet](https://pjreddie.com/darknet/yolo/)
-* download (pre-trained weight file)[https://pjreddie.com/media/files/yolov3.weights to darknet directory] to darknet directory
+* download [pre-trained weight file](https://pjreddie.com/media/files/yolov3.weights) to darknet directory
 
 ## Authors
 Ananmay Jain (project manager)  
