@@ -1,67 +1,62 @@
 import cv2
 import numpy as np
-import glob
-import csv
+from statistics import mode
 
-#Some help from https://www.pyimagesearch.com/2014/07/21/detecting-circles-images-using-opencv-hough-circles/
+# Some help from https://www.pyimagesearch.com/2014/07/21/detecting-circles-images-using-opencv-hough-circles/
 
 def threshold(img):
-	cv2.imshow('imafge',img)
-	cv2.waitKey(0)
-	cv2.destroyAllWindows()
-	newImg = img[:,:,0]
-	for i in range(0,img.shape[0]):
-		for j in range(0,img.shape[1]):
-			blue = img[i,j,0]
-			green = img[i,j,1]
-			red = img[i,j,2]
-			#threshold
-			isRed = (red > 165 and green < 100 and blue < 100)
-			isGreen = (green > 170 and blue > 70 and red < 100)
-			isYellow = (red > 170 and green > 170 and blue < 110)
-			if (isRed):
-				newImg[i,j] = 240
-			elif (isGreen):
-				newImg[i,j] = 160
-			elif (isYellow):
-				newImg[i,j] = 80
-			else:
-				newImg[i,j] = 0
-	cv2.imshow('image',newImg)
-	cv2.waitKey(0)
-	cv2.destroyAllWindows()
-	return newImg
+	# cv2.imshow('image',img)
+	# cv2.waitKey(0)
+	# cv2.destroyAllWindows()
+	redM1 = img[:,:,0] < 100
+	redM1.astype(np.int)
+	redM2 = img[:,:,1] < 100
+	redM2.astype(np.int)
+	redM3 = img[:,:,2] > 180
+	redM3.astype(np.int)
+	redArr = np.multiply(np.multiply(redM1,redM2),redM3) * 240
+	greenM1 = img[:,:,0] > 70
+	greenM1.astype(np.int)
+	greenM2 = img[:,:,1] > 170
+	greenM2.astype(np.int)
+	greenM3 = img[:,:,2] < 100
+	greenM3.astype(np.int)
+	greenArr = np.multiply(np.multiply(greenM1,greenM2),greenM3) * 160
+	yellowM1 = img[:,:,0] < 110
+	yellowM1.astype(np.int)
+	yellowM2 = img[:,:,1] > 170
+	yellowM2.astype(np.int)
+	yellowM3 = img[:,:,2] > 170
+	yellowM3.astype(np.int)
+	yellowArr = np.multiply(np.multiply(yellowM1,yellowM2),yellowM3) * 80
+	retArr = np.add(np.add(redArr,greenArr),yellowArr)
+	# cv2.imshow('l' , np.array(retArr, dtype = np.uint8))
+	# cv2.waitKey(0)
+	# cv2.destroyAllWindows()
+	return np.array(retArr, dtype = np.uint8)
 def getCircle(img):
 	img = threshold(img)
-	circles = cv2.HoughCircles(img, cv2.HOUGH_GRADIENT, 1, 75, param2 = 10)
-	output = img.copy()
+	circles = cv2.HoughCircles(img, cv2.HOUGH_GRADIENT, 1, 75, param2 = 3, maxRadius = 15)
 	retList = []
 	if circles is not None:
 		circles = np.round(circles[0, :]).astype("int")
 		for (x,y,r) in circles:
-			print(x)
-			print(y)
-			print(img[y][x])
-			print(r)
-			retList.append(img[y][x])
-			cv2.circle(output, (x, y), r, (0, 255, 0), 4)
-			cv2.rectangle(output, (x - 5, y - 5), (x + 5, y + 5), (0, 128, 255), -1)
-	toRet = [False, False, False]
-	if len(retList) > 0:
-		if retList[0] == 240:
-			toRet[0] = True
-		elif retList[0] == 160:
-			toRet[1] = True
-		elif retList[0] == 80:
-			toRet[2] = True
-	return toRet
-	cv2.imshow("output", np.hstack([img, output]))
-	cv2.waitKey(0)
-	cv2.destroyAllWindows()
-
+			# print(img[y,x])
+			# print(r)
+			# print("__________")
+			if (not(img[y,x] == 0)):
+				retList.append(img[y,x])
+		try:
+			return mode(retList)
+		except:
+			return retList[0]
+	return 0
+	# cv2.imshow("output", np.hstack([img, output]))
+	# cv2.waitKey(0)
+	# cv2.destroyAllWindows()
 
 #img = cv2.imread('GTARed1.jpg',1)
-#print(getCircle(threshold(img)))
+#print(getCircle(img))
 
 
 
