@@ -45,6 +45,7 @@ class METADATA(Structure):
     
 
 #lib = CDLL("/home/pjreddie/documents/darknet/libdarknet.so", RTLD_GLOBAL)
+#lib = CDLL("/Users/timbaer/cs196/pedestrian_detection/vision/object_detection/darknet/libdarknet.so", RTLD_GLOBAL)
 lib = CDLL("./vision/object_detection/darknet/libdarknet.so", RTLD_GLOBAL)
 lib.network_width.argtypes = [c_void_p]
 lib.network_width.restype = c_int
