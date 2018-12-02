@@ -11,14 +11,15 @@ def traffic_light_data(frame):
 	return traffic_data(frame)
 def pedestrians_and_cars(frame):
     # change location of files if not working
-    net = dn.load_net("vision/object_detection/darknet/cfg/yolov3.cfg", "vision/object_detection/darknet/yolov3.weights", 0)
-    meta = dn.load_meta("vision/object_detection/darknet/cfg/coco.data")
+    net = dn.load_net("vision/object_detection/darknet/cfg/yolov3.cfg".encode("utf-8"), "vision/object_detection/darknet/yolov3.weights".encode("utf-8"), 0)
+    meta = dn.load_meta("vision/object_detection/darknet/cfg/coco.data".encode("utf-8"))
 
-    # expects image as a file location!!!
-    r = dn.detect(net, meta, image)
+    #expects image as a file location!!!
+    r = dn.detect(net, meta, frame)
     return r
 
-#get_data("vision/object_detection/darknet/data/dog.jpg")
+# example
+print(pedestrians_and_cars("vision/object_detection/darknet/data/dog.jpg".encode("utf-8")))
 
 def main(frame):
 	ped_and_car_info = pedestrians_and_cars(frame)
