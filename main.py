@@ -1,8 +1,11 @@
-#from .vision.lane_detection.lane_detection import main as main_lane
+#from vision.lane_detection.lane_detection import main as main_lane
 #from vision.traffic_light.trafficLight import getCircles as traffic_data
 
 from vision.object_detection.darknet.python import darknet as dn
 import pdb
+
+import cv2
+import numpy as np
 
 moving = False
 def lane_detect_data(frame):
@@ -14,12 +17,16 @@ def pedestrians_and_cars(frame):
     net = dn.load_net("vision/object_detection/darknet/cfg/yolov3.cfg".encode("utf-8"), "vision/object_detection/darknet/yolov3.weights".encode("utf-8"), 0)
     meta = dn.load_meta("vision/object_detection/darknet/cfg/coco.data".encode("utf-8"))
 
-    #expects image as a file location!!!
     r = dn.detect(net, meta, frame)
     return r
 
-# example
-print(pedestrians_and_cars("vision/object_detection/darknet/data/dog.jpg".encode("utf-8")))
+# numpy array example
+# image = cv2.imread("vision/object_detection/darknet/data/dog.jpg")
+# print(pedestrians_and_cars(image))
+
+# filename example
+# image = pedestrians_and_cars("vision/object_detection/darknet/data/dog.jpg".encode("utf-8"))
+# print(pedestrians_and_cars(image))
 
 def main(frame):
 	ped_and_car_info = pedestrians_and_cars(frame)
