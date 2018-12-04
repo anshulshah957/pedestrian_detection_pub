@@ -7,6 +7,7 @@ We apply our object detection algorithms to implement a "self-driving" car in GT
 ## Dependencies
 * Python3
 * OpenCV
+* NumPy
 
 ### [darknet](https://pjreddie.com/darknet/yolo/)
 * download [pre-trained weight file](https://pjreddie.com/media/files/yolov3.weights) to darknet directory
@@ -27,3 +28,7 @@ Journal: arXiv
 Year: 2018  
 Availability: https://pjreddie.com/darknet/yolo/  
 
+Title: Not just another YOLO V3 for Python (comment)  
+Author: Glenn Jocher  
+Year: 2018  
+Availability: https://medium.com/@glenn.jocher/to-follow-up-i-updated-array-to-image-and-detect-to-utilize-numpy-edf326171e76
