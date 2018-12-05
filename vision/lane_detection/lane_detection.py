@@ -142,6 +142,18 @@ def draw_lines(img, lines, color = [0, 255, 0], thickness = 3, slope_threshold =
 
     return poly_left, poly_right
 
+def intersect_lines(poly_left, poly_right):
+    left_b = poly_left[0]
+    left_m = poly_left[1]
+    right_b = poly_right[0]
+    right_m = poly_right[1]
+    
+    a = np.array([[-left_m, 1], [-right_m, 1]])
+    b = np.array([left_b, right_b])
+
+    # returns [x y]
+    return np.linalg.solve(a, b)
+
 def main(frame):
     # vid = cv2.VideoCapture('clip_highway_video.mp4')
     # frame_width = int(vid.get(3))
@@ -181,5 +193,5 @@ def main(frame):
 
 
 
-if __name__ == '__main__':
-    main()
+'''if __name__ == '__main__':
+    main()'''
