@@ -8,6 +8,7 @@ We apply our object detection algorithms to implement a "self-driving" car in GT
 * Python3
 * OpenCV
 * NumPy
+* pynput
 
 ### [darknet](https://pjreddie.com/darknet/yolo/)
 * download [pre-trained weight file](https://pjreddie.com/media/files/yolov3.weights) to darknet directory
