@@ -117,13 +117,13 @@ def stop():
 
 
 if __name__ == "__main__":
-	# change location of files if not working
-	net = dn.load_net("vision/object_detection/darknet/cfg/yolov3.cfg".encode("utf-8"), "vision/object_detection/darknet/yolov3.weights".encode("utf-8"), 0)
-	meta = dn.load_meta("vision/object_detection/darknet/cfg/coco.data".encode("utf-8"))
+	# specify absolute pathes if not working
+	# net = dn.load_net("vision/object_detection/darknet/cfg/yolov3.cfg".encode("utf-8"), "vision/object_detection/darknet/yolov3.weights".encode("utf-8"), 0)
+	# meta = dn.load_meta("vision/object_detection/darknet/cfg/coco.data".encode("utf-8"))
 	
 	# numpy array example on a single image
-	# image = cv2.imread("vision/object_detection/darknet/data/dog.jpg")
-	# print(pedestrians_and_cars(image, net, meta))
+	image = cv2.imread("vision/object_detection/darknet/data/dog.jpg")
+	print(pedestrians_and_cars(image, net, meta))
 
 	cap = cv2.VideoCapture('Test_Video.mp4')
 	while(cap.isOpened()):
