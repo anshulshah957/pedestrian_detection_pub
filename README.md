@@ -11,6 +11,8 @@ We apply our object detection algorithms to implement a "self-driving" car in GT
 * pynput
 
 ### [darknet](https://pjreddie.com/darknet/yolo/)
+* `cd vision/object_detection/darknet`  
+`make`  
 * download [pre-trained weight file](https://pjreddie.com/media/files/yolov3.weights) to darknet directory
 
 ## Authors
