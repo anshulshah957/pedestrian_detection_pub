@@ -1,5 +1,6 @@
 from vision.lane_detection.lane_detection import main as main_lane
 from vision.traffic_light.trafficLight import getCircle as traffic_data
+from vision.lane_detection.lane_detection import intersect_lines
 from pynput.keyboard import Key, Controller
 
 from vision.object_detection.darknet.python import darknet as dn
@@ -72,7 +73,7 @@ def main(frame):
 
 #TODO: Add method for adjusting direction
 def adjust_direction(poly_left,poly_right):
-    pass
+	
 def move(isTop, isBottom, moving, poly_left, poly_right, distance, distancePast):
 	if (isTop):
 		stop()
