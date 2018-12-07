@@ -18,6 +18,7 @@ keyboard = Controller()
 STOP_TIME_BUFFER = 0.1
 SHORT_BRAKE_TIME = 0.050
 SHORT_ACCEL_TIME = 0.050
+SHORT_TURN_TIME = 0.050
 SPEED_CAP = 2
 
 def pedestrians_and_cars(frame):
@@ -70,10 +71,22 @@ def main(frame):
 		distance = frame_height
 	move(isTop, isBottom, moving, poly_left, poly_right, distance, distancePast)
 
+def adjust_direction(poly_left,poly_right,frame_width):
+	res = intersect_lines(poly_left, poly_right)
+	x = res[0]
+	middle_x = frame_width // 2
 
-#TODO: Add method for adjusting direction
-def adjust_direction(poly_left,poly_right):
-	
+	if x == middle_x:
+		pass
+	elif x < middle_x:
+		keyboard.press('a')
+		time.sleep(SHORT_TURN_TIME)
+		keyboard.release('a')
+	else:
+		keyboard.press('d')
+		time.sleep(SHORT_TURN_TIME)
+		keyboard.release('d')
+
 def move(isTop, isBottom, moving, poly_left, poly_right, distance, distancePast):
 	if (isTop):
 		stop()
