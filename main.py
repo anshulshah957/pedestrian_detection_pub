@@ -9,7 +9,7 @@ import pdb
 import cv2
 import numpy as np
 import time
-
+from PIL import ImageGrab
 moving = False
 distancePast = None
 speedTime = 0
@@ -115,6 +115,19 @@ def stop():
 	time.sleep(speedTime + STOP_TIME_BUFFER)
 	keyboard.release(Key.space)
 
+def captureVideo(nameofthevideo):
+    fourcc = cv2.VideoWriter_fourcc(*'DIVX')
+    out = cv2.VideoWriter(nameofthevideo,fourcc, 20.0, (1920,1080))
+    while True:
+        img = ImageGrab.grab()
+        img=np.array(img)
+        frame = cv2.cvtColor(img, cv2.COLOR_RGB2BGR)
+        out.write(frame)
+        cv2.imshow('Screen',frame)
+        if cv2.waitKey(1) & 0xFF == ord('q'):
+            break
+    out.release()
+    cv2.destroyAllWindows()
 
 if __name__ == "__main__":
 	# change location of files if not working
