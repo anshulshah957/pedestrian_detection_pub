@@ -11,6 +11,7 @@ import numpy as np
 import time
 
 moving = False
+distancePast = None
 speedTime = 0
 
 keyboard = Controller()
@@ -32,8 +33,6 @@ def pedestrians_and_cars(frame):
 #TODO: Make sure poly_left and poly_right map y->x and not x->y because otherwise this is all wrong
 #TODO: Integrate traffic-light detection
 def main(frame):
-	distancePast = None
-
 	#Start loop here
 	ped_and_car_info = pedestrians_and_cars(frame)
 	traffic_lights = traffic_data(frame)
@@ -69,7 +68,7 @@ def main(frame):
 		distance = min(distanceList)
 	except:
 		distance = frame_height
-	move(isTop, isBottom, moving, poly_left, poly_right, distance, distancePast)
+	move(isTop, isBottom, moving, poly_left, poly_right, distance, distancePast, frame_width)
 
 def adjust_direction(poly_left,poly_right,frame_width):
 	res = intersect_lines(poly_left, poly_right)
@@ -87,12 +86,12 @@ def adjust_direction(poly_left,poly_right,frame_width):
 		time.sleep(SHORT_TURN_TIME)
 		keyboard.release('d')
 
-def move(isTop, isBottom, moving, poly_left, poly_right, distance, distancePast):
+def move(isTop, isBottom, moving, poly_left, poly_right, distance, distancePast, frame_width):
 	if (isTop):
 		stop()
 		moving = False
 		return
-	adjust_direction(poly_left, poly_right)
+	adjust_direction(poly_left, poly_right, frame_width)
 	if (distancePast > distance):
 		keyboard.press(Key.space)
 		time.sleep(SHORT_BRAKE_TIME)
@@ -113,6 +112,11 @@ def stop():
 
 
 if __name__ == "__main__":
-    pass
-    #main()
+	cap = cv2.VideoCapture(Test_Video.mp4)
+	while(cap.isOpened()):
+		ret, frame = cap.read()
+		main(frame)
+
+
+    
 
