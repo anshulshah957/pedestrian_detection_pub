@@ -53,9 +53,11 @@ def main(frame):
 	for box in ped_and_car_info:
 		centerX = box[2][0] + box[2][2] // 2
 		centerY = box[2][1] + box[2][3] // 2
-		#TODO: Add in all approved classes
-		if not(box[0] == "car" || box[0] == "truck" || box[0] == "pedestrian"):
-			continue
+
+		action_classes = ["person", "car", "motorbike", "bus"]
+		for name in action_classes:
+			if box[0] == name:
+				continue
 
 		if centerY in range(0.5 * frame_height,0.65 * frame_height):
 			if centerX in range(xLeftDown,xRightDown):
