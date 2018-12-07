@@ -33,6 +33,7 @@ def main(frame, net, meta):
 	ped_and_car_info = pedestrians_and_cars(frame)
 	traffic_lights = traffic_data(frame)
 	poly_left, poly_right = main_lane(frame)
+	return ped_and_car_info
 	#Can get this once and export it to outside loop
 	frame_height = frame.size(0)
 	#TODO: Find better ranges: top means EMERGENCY STOP, bottom should not be outside of lane accuracy range
@@ -118,12 +119,18 @@ if __name__ == "__main__":
 	# change location of files if not working
     net = dn.load_net("vision/object_detection/darknet/cfg/yolov3.cfg".encode("utf-8"), "vision/object_detection/darknet/yolov3.weights".encode("utf-8"), 0)
     meta = dn.load_meta("vision/object_detection/darknet/cfg/coco.data".encode("utf-8"))
-		
-	cap = cv2.VideoCapture(Test_Video.mp4)
+
+	cap = cv2.VideoCapture('Test_Video.mp4')
 	while(cap.isOpened()):
 		ret, frame = cap.read()
-		main(frame, net, meta)
-
-
-    
-
+		boxes = main(frame, net, meta)
+		print('\n')
+		print('\n')
+		for box in boxes:
+			print(box[0])
+		print('\n')
+		print('\n')
+		if cv2.waitKey(1) & 0xFF == ord('q'):
+			break
+	cap.release()
+	cv2.destroyAllWindows()
