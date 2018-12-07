@@ -83,7 +83,10 @@ def draw_lines(img, lines, color = [0, 255, 0], thickness = 3, slope_threshold =
         y0 = lines[i][0][1]
         x1 = lines[i][0][2]
         y1 = lines[i][0][3]
-        slope = (y1 - y0)/(x1 - x0)
+        try:
+        	slope = (y1 - y0)/(x1 - x0)
+		except:
+			slope = 10000
         if abs(slope) < slope_threshold:
             continue
         if slope < 0:
