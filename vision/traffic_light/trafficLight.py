@@ -49,7 +49,10 @@ def getCircle(img):
 		try:
 			return mode(retList)
 		except:
-			return retList[0]
+			try:
+				return retList[0]
+			except:
+				return 0
 	return 0
 	# cv2.imshow("output", np.hstack([img, output]))
 	# cv2.waitKey(0)
