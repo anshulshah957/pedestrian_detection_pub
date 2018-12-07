@@ -9,7 +9,8 @@ import pdb
 import cv2
 import numpy as np
 import time
-
+from PIL import Image
+from mss import mss
 moving = False
 distancePast = None
 speedTime = 0
@@ -31,10 +32,9 @@ def pedestrians_and_cars(frame, net, meta):
 def main(frame, net, meta):
 	#Start loop here
 	ped_and_car_info = pedestrians_and_cars(frame, net, meta)
-	'''traffic_lights = traffic_data(frame)
-	poly_left, poly_right = main_lane(frame)'''
-
-	return ped_and_car_info
+	print("detecting")
+	traffic_lights = traffic_data(frame)
+	poly_left, poly_right = main_lane(frame)
 	#Can get this once and export it to outside loop
 	frame_height = frame.size(0)
 	#TODO: Find better ranges: top means EMERGENCY STOP, bottom should not be outside of lane accuracy range
@@ -115,8 +115,22 @@ def stop():
 	time.sleep(speedTime + STOP_TIME_BUFFER)
 	keyboard.release(Key.space)
 
+def captureVideo(nameofthevideo):
+    fourcc = cv2.VideoWriter_fourcc(*'DIVX')
+    out = cv2.VideoWriter(nameofthevideo,fourcc, 20.0, (1920,1080))
+    while True:
+        img = ImageGrab.grab()
+        img=np.array(img)
+        frame = cv2.cvtColor(img, cv2.COLOR_RGB2BGR)
+        out.write(frame)
+        cv2.imshow('Screen',frame)
+        if cv2.waitKey(1) & 0xFF == ord('q'):
+            break
+    out.release()
+    cv2.destroyAllWindows()
 
 if __name__ == "__main__":
+<<<<<<< HEAD
 	# specify absolute pathes if not working
 	# net = dn.load_net("vision/object_detection/darknet/cfg/yolov3.cfg".encode("utf-8"), "vision/object_detection/darknet/yolov3.weights".encode("utf-8"), 0)
 	# meta = dn.load_meta("vision/object_detection/darknet/cfg/coco.data".encode("utf-8"))
@@ -125,18 +139,30 @@ if __name__ == "__main__":
 	image = cv2.imread("vision/object_detection/darknet/data/dog.jpg")
 	print(pedestrians_and_cars(image, net, meta))
 
+	while True:
+		monitor = mss().monitors[1]
+		sct_img = mss().grab(monitor)
+		img = Image.frombytes('RGB', sct_img.size, sct_img.bgra, 'raw', 'BGRX')
+		img = np.array(img)
+		main(img, net, meta)
+
 	cap = cv2.VideoCapture('Test_Video.mp4')
 	while(cap.isOpened()):
-		ret, frame = cap.read()
-		boxes = main(frame, net, meta)
-		print('\n')
-		print('\n')
-		for box in boxes:
-			print(box[0])
-		print('\n')
-		print('\n')
-		cv2.imshow('frame',frame)
-		if cv2.waitKey(1) & 0xFF == ord('q'):
-			break
+	ret, frame = cap.read()
+	boxes = main(frame, net, meta)
+
+	print('\n')
+	print('\n')
+
+	for box in boxes:
+		print(box[0])
+
+	print('\n')
+	print('\n')
+
+	cv2.imshow('frame',frame)
+	if cv2.waitKey(1) & 0xFF == ord('q'):
+		break
+		
 	cap.release()
 	cv2.destroyAllWindows()

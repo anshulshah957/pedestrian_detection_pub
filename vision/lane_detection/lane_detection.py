@@ -68,6 +68,8 @@ def hough_transform(img):
             )
 
 def draw_lines(img, lines, color = [0, 255, 0], thickness = 3, slope_threshold = 0.5):
+    if lines == None:
+        return
     if len(lines) == 0:
         return
 
