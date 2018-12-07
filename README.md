@@ -8,7 +8,9 @@ We apply our object detection algorithms to implement a "self-driving" car in GT
 * Python3
 * OpenCV
 * NumPy
-* pynput
+* pynput  
+* Pillow  
+* mss
 
 ### [darknet](https://pjreddie.com/darknet/yolo/)
 * `cd vision/object_detection/darknet`  
