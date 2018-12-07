@@ -22,17 +22,13 @@ SHORT_ACCEL_TIME = 0.050
 SHORT_TURN_TIME = 0.050
 SPEED_CAP = 2
 
-def pedestrians_and_cars(frame):
-    # change location of files if not working
-    net = dn.load_net("vision/object_detection/darknet/cfg/yolov3.cfg".encode("utf-8"), "vision/object_detection/darknet/yolov3.weights".encode("utf-8"), 0)
-    meta = dn.load_meta("vision/object_detection/darknet/cfg/coco.data".encode("utf-8"))
-
-    r = dn.detect(net, meta, frame)
+def pedestrians_and_cars(frame, net, meta):
+	r = dn.detect(net, meta, frame)
     return r
 
 #TODO: Make sure poly_left and poly_right map y->x and not x->y because otherwise this is all wrong
 #TODO: Integrate traffic-light detection
-def main(frame):
+def main(frame, net, meta):
 	#Start loop here
 	ped_and_car_info = pedestrians_and_cars(frame)
 	traffic_lights = traffic_data(frame)
@@ -119,10 +115,14 @@ def stop():
 
 
 if __name__ == "__main__":
+	# change location of files if not working
+    net = dn.load_net("vision/object_detection/darknet/cfg/yolov3.cfg".encode("utf-8"), "vision/object_detection/darknet/yolov3.weights".encode("utf-8"), 0)
+    meta = dn.load_meta("vision/object_detection/darknet/cfg/coco.data".encode("utf-8"))
+		
 	cap = cv2.VideoCapture(Test_Video.mp4)
 	while(cap.isOpened()):
 		ret, frame = cap.read()
-		main(frame)
+		main(frame, net, meta)
 
 
     
