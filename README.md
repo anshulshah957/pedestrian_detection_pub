@@ -5,6 +5,7 @@ We use the darknet framework to classify pedestrians, vehicles, traffic lights a
 We apply our object detection algorithms to implement a "self-driving" car in GTAV that can detect the above objects and make simple decisions.
 
 ## Dependencies
+* GTAV
 * Python3
 * OpenCV
 * NumPy
