@@ -61,6 +61,7 @@ def getCircle(img):
 #img = cv2.imread('GTAYellowAndRed1.jpg',1)
 #print(getCircle(img))
 if __name__ == "__main__":
+	#INPUT FILENAME BELOW
 	img = cv2.imread('GTARed1.jpg', 1)
 	cv2.imshow("input", img)
 	cv2.waitKey(0)
