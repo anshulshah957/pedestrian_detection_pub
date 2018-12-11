@@ -17,11 +17,28 @@ We are in the process of integrating these detection algorithms to implement a "
 * mss
 
 ### [darknet](https://pjreddie.com/darknet/yolo/)
-* `cd vision/object_detection/darknet`  
+`cd vision/object_detection/darknet`  
 `make`  
-* download [pre-trained weight file](https://pjreddie.com/media/files/yolov3.weights) to darknet directory
+`wget https://pjreddie.com/media/files/yolov3.weights`
+## Demos
+### Darknet
+Note: our configuration currently only supports numpy arrays.
+#### Image
+Writes bounding box data to output.txt.
+* cd to pedestrian_detection directory  
+* open test_image.py  
+* change path to image file on line 16  
+* `python test_image.py`
 
-### Traffic Light Detection Demo
+#### Video
+* cd to pedestrian_detection directory  
+* open test_video.py  
+* change path to video file on line 15  
+* `python test_video.py`
+
+Note: [compile with CUDA](https://pjreddie.com/darknet/install/#cuda) for 500x speedup.
+
+### Traffic Light Detection
 * 'cd vision/traffic_light'
 * open 'trafficLight.py'
 * add filename you want to test in line 65
