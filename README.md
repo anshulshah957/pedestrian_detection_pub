@@ -28,7 +28,7 @@ Thomas Mao
 Anshul Shah
 
 ## License
-This project is distributed under the MIT license - see the LICENSE.md file for more details
+This project is distributed under the GNU General Public Liscense - see the LICENSE.md file for more details
 
 ## Acknowledgments
 Title: YOLOV3: An Incremental Improvement  
