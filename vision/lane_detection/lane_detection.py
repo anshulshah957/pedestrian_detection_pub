@@ -61,17 +61,15 @@ def hough_transform(img):
             img,
             rho = 6,
             theta = np.pi/60,
-            threshold = 600,
+            threshold = 160,
             lines = np.array([]),
                 minLineLength = 100,
             maxLineGap = 60
             )
 
 def draw_lines(img, lines, color = [0, 255, 0], thickness = 3, slope_threshold = 0.5):
-    if lines == None:
-        return
     if lines.any() == None:
-        return
+        return 
     if len(lines) == 0:
         return
 
@@ -79,16 +77,13 @@ def draw_lines(img, lines, color = [0, 255, 0], thickness = 3, slope_threshold =
     right_line = []
 
     line_image = np.copy(img)
-    # cv2.imshow('img',img)
+    #cv2.imshow('img',img)
     for i in range (len(lines)):
         x0 = lines[i][0][0]
         y0 = lines[i][0][1]
         x1 = lines[i][0][2]
         y1 = lines[i][0][3]
-        try:
-        	slope = (y1 - y0)/(x1 - x0)
-        except:
-            slope = 10000
+        slope = (y1 - y0)/(x1 - x0)
         if abs(slope) < slope_threshold:
             continue
         if slope < 0:
@@ -130,9 +125,9 @@ def draw_lines(img, lines, color = [0, 255, 0], thickness = 3, slope_threshold =
     poly_left = np.poly1d([left_m, left_b])
     poly_right = np.poly1d([right_m, right_b])
 
-    # print(poly_left)
-    # print(poly_right)
-    # # just below our triangular cropped image
+    print(poly_left)
+    print(poly_right)
+    # just below our triangular cropped image
     min_y = int(img.shape[0] * (3/5))
     max_y = int(img.shape[0])
 
@@ -146,61 +141,36 @@ def draw_lines(img, lines, color = [0, 255, 0], thickness = 3, slope_threshold =
 
     cv2.line(img, (left_x_start,max_y), (left_x_end, min_y), color, thickness)
     cv2.line(img, (right_x_start,max_y), (right_x_end, min_y), color, thickness)
-    
-    print(type(img))
-    return poly_left, poly_right, img
 
-def intersect_lines(poly_left, poly_right):
-    left_b = poly_left[0]
-    left_m = poly_left[1]
-    right_b = poly_right[0]
-    right_m = poly_right[1]
-    
-    a = np.array([[-left_m, 1], [-right_m, 1]])
-    b = np.array([left_b, right_b])
-
-    # returns [x y]
-    return np.linalg.solve(a, b)
+    return img, poly_left, poly_right
 
 def main(frame):
-    # vid = cv2.VideoCapture('clip_highway_video.mp4')
-    # frame_width = int(vid.get(3))
-    # frame_height = int(vid.get(4))
-    # out = cv2.VideoWriter('outpy.avi',cv2.VideoWriter_fourcc('M','J','P','G'), 20, (frame_width,frame_height))
-    # while vid.isOpened():
-
-        # ret, frame = vid.read()
-
+    
     gray = grayscale(frame)
-
     canny_image = canny_edge(gray)
-
     width = canny_image.shape[1]
     height = canny_image.shape[0]
-
+    
     region = [(0,height), (0, (3/4)*height), (int(1*width/4),int(height/2)),\
               (int(3*width/4), int(height/2)), (width, (3/4)*height), (width,height)]
+    '''
+    region = [(0,0), (int(width/2),int(height/2)), (width,height)]
+    '''
     mask_image = image_mask(canny_image, region)
-
     lines = hough_transform(mask_image)
-        # for i in range(len(lines)):
-        #     cv2.line(frame,(lines[i][0][0], lines[i][0][1]),(lines[i][0][2], \
-        #             lines[i][0][3]),(0,255,0), 3)
-        # for x1,y1,x2,y2 in lines[0]:
-        #     cv2.line(mask_image,(x1,y1),(x2,y2),(0,255,0),10)
-        # line_image = draw_lines(mask_image,lines)
-        
-        # line_image, poly_left, poly_right = draw_lines(frame, lines)
+    #
+    # for i in range(len(lines)):
+    #     cv2.line(frame,(lines[i][0][0], lines[i][0][1]),(lines[i][0][2], \
+    #             lines[i][0][3]),(0,255,0), 3)
+    #  for x1,y1,x2,y2 in lines[0]:
+    #      cv2.line(mask_image,(x1,y1),(x2,y2),(0,255,0),10)
+    # cv2.imshow('frame',frame)
+    #  line_image = draw_lines(mask_image,lines)
     return draw_lines(frame, lines)
+    
+
         
-        # cv2.waitKey(1)
 
-    # vid.release()
-    # out.release()
-    # cv2.destrolAllWindows()
+    
 
 
-
-
-'''if __name__ == '__main__':
-    main()'''

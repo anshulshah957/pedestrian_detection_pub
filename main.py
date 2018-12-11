@@ -1,9 +1,12 @@
 from vision.lane_detection.lane_detection import main as main_lane
 from vision.traffic_light.trafficLight import getCircle as traffic_data
-from vision.lane_detection.lane_detection import intersect_lines
+#from vision.lane_detection.lane_detection import intersect_lines
 from pynput.keyboard import Key, Controller
 from directkeys import PressKey,ReleaseKey, W, A, S, D
 #from vision.object_detection.darknet.python import darknet as dn
+from svm_pipeline import *
+from yolo_pipeline import *
+from lane import *
 import keyboard
 import pdb
 import cv2
@@ -22,6 +25,20 @@ SHORT_BRAKE_TIME = 0.050
 SHORT_ACCEL_TIME = 0.050
 SHORT_TURN_TIME = 0.050
 SPEED_CAP = 2
+
+def pipeline_yolo(img):
+
+    img_undist, img_lane_augmented, lane_info = lane_process(img)
+    output = vehicle_detection_yolo(img_undist, img_lane_augmented, lane_info)
+
+    return output
+
+def pipeline_svm(img):
+
+    img_undist, img_lane_augmented, lane_info = lane_process(img)
+    output = vehicle_detection_svm(img_undist, img_lane_augmented, lane_info)
+    return output
+
 '''
 def pedestrians_and_cars(frame, net, meta):
 	r = dn.detect(net, meta, frame)
@@ -90,8 +107,10 @@ def adjust_direction(poly_left, poly_right, frame_height, frame_width):
         else :
             x_rel_cen=400
     if x_rel_cen < 0:
+        print('d is pressed')
         i = 0
         while i < (abs(x_rel_cen)/200):
+            
             # print("here")
             keyboard.press('d')
             # print("here2")
@@ -101,6 +120,7 @@ def adjust_direction(poly_left, poly_right, frame_height, frame_width):
             time.sleep(.500)
         
     elif x_rel_cen > 0:
+        print('a is pressed')
         i = 0
         while i < abs(x_rel_cen)/200:
             # print("here4")
@@ -167,27 +187,7 @@ def captureVideo(nameofthevideo):
     out.release()
     cv2.destroyAllWindows()
 '''
-def straight():
-    PressKey(W)
-    ReleaseKey(A)
-    ReleaseKey(D)
 
-def left():
-    PressKey(A)
-    ReleaseKey(W)
-    ReleaseKey(D)
-    ReleaseKey(A)
-
-def right():
-    PressKey(D)
-    ReleaseKey(A)
-    ReleaseKey(W)
-    ReleaseKey(D)
-
-def slow_ya_roll():
-    ReleaseKey(W)
-    ReleaseKey(A)
-    ReleaseKey(D)
 
 def main():
     keyboard=Controller()
@@ -224,30 +224,80 @@ def main():
 		
 
 if __name__ == "__main__":
-    for i in range(5):
-        print(i+1)
-        time.sleep(1)
-    fourcc = cv2.VideoWriter_fourcc(*'DIVX')
-    out = cv2.VideoWriter("test1.mp4",fourcc, 20.0, (1920,1080))
-    while True:
-        
-        screen =  np.array(ImageGrab.grab())
-		#main(img, net, meta)
-        #cap = cv2.VideoCapture('pov.mp4')
-	    #while(cap.isOpened()):
-		#ret, frame = cap.read()
-        
-        poly_left, poly_right, lane_detection_image = main_lane(screen)
-        #cv2.imshow('frame',lane_detection_image)
-        out.write(lane_detection_image)
-        #move(False, False, False, poly_left, poly_right,img.shape[0], img.shape[1])
-		# trafficlights = traffic_data(frame);
-        # print(trafficlights)
-        
+    
+    cap = cv2.VideoCapture(0)
+    while(True):
+    # Capture frame-by-frame
+        ret, frame = cap.read()
+        frame = cv2.resize(frame, (1280, 720))
+        frame = pipeline_yolo(frame)
+    
+        # Display the resulting frame
+        cv2.imshow('frame',frame)
         if cv2.waitKey(1) & 0xFF == ord('q'):
+            break
+    cap.release()
+    cv2.destroyAllWindows()
+    
+    '''
+    fourcc = cv2.VideoWriter_fourcc(*'DIVX')
+    out = cv2.VideoWriter("deepdrivetry1.mp4",fourcc, 20.0, (1280,720))
+    for i in range(4):
+        print(i)
+        time.sleep(1)
+    keyboard = Controller()
+    while True:
+        frame = np.array(ImageGrab.grab(bbox=(0,40,1280,720)))
+        frame, poly_left, poly_right = main_lane(frame)
+        y_index = int(frame.shape[0]*(3/4))
+        x_left = poly_left(y_index)
+        x_right = poly_right(y_index)
+        #
+        x_rel = int((x_left + x_right)/2)
+        x_rel_cen = int(frame.shape[1]/2) - x_rel
+        print(x_rel_cen)
+        if abs(x_rel_cen) > 400:
+            if x_rel_cen < 0:
+                x_rel_cen = -400
+            else :
+                x_rel_cen=400
+        
+        if x_rel_cen < -50:
+            print('d is pressed')
+            keyboard.press('a')
+            time.sleep(0.0006*abs(x_rel_cen))
+            keyboard.release('a')
+            
+            i = 0
+            while i < (abs(x_rel_cen)/200):
+                
+                # print("here")
+                keyboard.press('a')
+                # print("here2")
+                keyboard.release('a')
+                # print("here3")
+                i = i + 1
+                time.sleep(.500)
+                    
+        if x_rel_cen >= -50:
+            print('a is pressed')
+            keyboard.press('d')
+            time.sleep(0.0006*abs(x_rel_cen))
+            keyboard.release('d')
+            
+            while i < abs(x_rel_cen)/200:
+                # print("here4")
+                keyboard.press('a')
+                # print("here5")
+                keyboard.release('a')
+                # print("here6")
+                i = i + 1
+                time.sleep(.500)
+            
+        cv2.imshow('window', frame)
+        out.write(frame)
+        if cv2.waitKey(10) & 0xFF == ord('q'):
             break
     out.release()
     cv2.destroyAllWindows()
-      
-    
-        
+    '''
