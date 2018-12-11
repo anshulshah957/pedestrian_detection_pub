@@ -70,6 +70,8 @@ def hough_transform(img):
 def draw_lines(img, lines, color = [0, 255, 0], thickness = 3, slope_threshold = 0.5):
     if lines == None:
         return
+    if lines.any() == None:
+        return
     if len(lines) == 0:
         return
 
@@ -77,7 +79,7 @@ def draw_lines(img, lines, color = [0, 255, 0], thickness = 3, slope_threshold =
     right_line = []
 
     line_image = np.copy(img)
-    cv2.imshow('img',img)
+    # cv2.imshow('img',img)
     for i in range (len(lines)):
         x0 = lines[i][0][0]
         y0 = lines[i][0][1]
@@ -85,8 +87,8 @@ def draw_lines(img, lines, color = [0, 255, 0], thickness = 3, slope_threshold =
         y1 = lines[i][0][3]
         try:
         	slope = (y1 - y0)/(x1 - x0)
-		except:
-			slope = 10000
+        except:
+            slope = 10000
         if abs(slope) < slope_threshold:
             continue
         if slope < 0:
@@ -131,21 +133,22 @@ def draw_lines(img, lines, color = [0, 255, 0], thickness = 3, slope_threshold =
     # print(poly_left)
     # print(poly_right)
     # # just below our triangular cropped image
-    # min_y = int(img.shape[0] * (3/5))
-    # max_y = int(img.shape[0])
+    min_y = int(img.shape[0] * (3/5))
+    max_y = int(img.shape[0])
 
-    # left_x_start = int(poly_left(max_y))
-    # left_x_end = int(poly_left(min_y))
+    left_x_start = int(poly_left(max_y))
+    left_x_end = int(poly_left(min_y))
 
-    # right_x_start = int(poly_right(max_y))
-    # right_x_end = int(poly_right(min_y))
+    right_x_start = int(poly_right(max_y))
+    right_x_end = int(poly_right(min_y))
 
-    # mask = np.zeros_like(img)
+    mask = np.zeros_like(img)
 
-    # cv2.line(img, (left_x_start,max_y), (left_x_end, min_y), color, thickness)
-    # cv2.line(img, (right_x_start,max_y), (right_x_end, min_y), color, thickness)
-
-    return poly_left, poly_right
+    cv2.line(img, (left_x_start,max_y), (left_x_end, min_y), color, thickness)
+    cv2.line(img, (right_x_start,max_y), (right_x_end, min_y), color, thickness)
+    
+    print(type(img))
+    return poly_left, poly_right, img
 
 def intersect_lines(poly_left, poly_right):
     left_b = poly_left[0]
@@ -175,7 +178,8 @@ def main(frame):
     width = canny_image.shape[1]
     height = canny_image.shape[0]
 
-    region = [(0,0), (int(width/2),int(height/2)), (width,height)]
+    region = [(0,height), (0, (3/4)*height), (int(1*width/4),int(height/2)),\
+              (int(3*width/4), int(height/2)), (width, (3/4)*height), (width,height)]
     mask_image = image_mask(canny_image, region)
 
     lines = hough_transform(mask_image)

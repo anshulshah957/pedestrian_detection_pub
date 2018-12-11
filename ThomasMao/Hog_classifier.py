@@ -79,7 +79,7 @@ def extract_features(imgs, cspace='RGB', orient=8,
 
 cars = glob.glob('vehicles/**/*.png', recursive=True)
 notcars = glob.glob('non-vehicles/**/*.png', recursive=True)
-colorspace = 'RGB' # Can be RGB, HSV, LUV, HLS, YUV, YCrCb
+colorspace = 'YCrCb' # Can be RGB, HSV, LUV, HLS, YUV, YCrCb
 orient = 8
 pix_per_cell = 8
 cell_per_block = 1
@@ -122,6 +122,6 @@ svc.fit(X_train, y_train)
 t2 = time.time()
 print(round(t2-t, 2), 'Seconds to train SVC...')
 
-pickle.dump( svc, open( "saved_svc.p", "wb" ) )
-pickle.dump( X_scaler, open( "saved_X_scaler.p", "wb" ) )
+pickle.dump( svc, open( "saved_svc_YCrCb.p", "wb" ) )
+pickle.dump( X_scaler, open( "saved_X_scaler_YCrCb.p", "wb" ) )
 

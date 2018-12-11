@@ -2,31 +2,31 @@ from vision.lane_detection.lane_detection import main as main_lane
 from vision.traffic_light.trafficLight import getCircle as traffic_data
 from vision.lane_detection.lane_detection import intersect_lines
 from pynput.keyboard import Key, Controller
-
-from vision.object_detection.darknet.python import darknet as dn
+from directkeys import PressKey,ReleaseKey, W, A, S, D
+#from vision.object_detection.darknet.python import darknet as dn
+import keyboard
 import pdb
-
 import cv2
 import numpy as np
 import time
 from PIL import Image
 from mss import mss
+from PIL import ImageGrab
+import pyautogui
 moving = False
 distancePast = None
 speedTime = 0
-
-keyboard = Controller()
 #TODO: Find good values for paramters
 STOP_TIME_BUFFER = 0.1
 SHORT_BRAKE_TIME = 0.050
 SHORT_ACCEL_TIME = 0.050
 SHORT_TURN_TIME = 0.050
 SPEED_CAP = 2
-
+'''
 def pedestrians_and_cars(frame, net, meta):
 	r = dn.detect(net, meta, frame)
 	return r
-
+'''
 #TODO: Make sure poly_left and poly_right map y->x and not x->y because otherwise this is all wrong
 #TODO: Integrate traffic-light detection
 def main(frame, net, meta):
@@ -75,29 +75,66 @@ def main(frame, net, meta):
 		distance = frame_height
 	move(isTop, isBottom, moving, poly_left, poly_right, distance, distancePast, frame_width)
 
-def adjust_direction(poly_left,poly_right,frame_width):
-	res = intersect_lines(poly_left, poly_right)
-	x = res[0]
-	middle_x = frame_width // 2
-
+def adjust_direction(poly_left, poly_right, frame_height, frame_width):
+    keyboard = Controller()
+    y_index = int(frame_height*(3/4))
+    x_left = poly_left(y_index)
+    x_right = poly_right(y_index)
+    #
+    x_rel = int((x_left + x_right)/2)
+    x_rel_cen = int(frame_width/2) - x_rel
+    print(x_rel_cen)
+    if abs(x_rel_cen) > 400:
+        if x_rel_cen < 0:
+            x_rel_cen = -400
+        else :
+            x_rel_cen=400
+    if x_rel_cen < 0:
+        i = 0
+        while i < (abs(x_rel_cen)/200):
+            # print("here")
+            keyboard.press('d')
+            # print("here2")
+            keyboard.release('d')
+            # print("here3")
+            i = i + 1
+            time.sleep(.500)
+        
+    elif x_rel_cen > 0:
+        i = 0
+        while i < abs(x_rel_cen)/200:
+            # print("here4")
+            keyboard.press('a')
+            # print("here5")
+            keyboard.release('a')
+            # print("here6")
+            i = i + 1
+            time.sleep(.500)
+    # res = intersect_lines(poly_left, poly_right)
+	#x = res[0]
+	#middle_x = frame_width // 2
+    '''
 	if x == middle_x:
 		pass
 	elif x < middle_x:
 		keyboard.press('a')
 		time.sleep(SHORT_TURN_TIME)
-		keyboard.release('a')
+		keyboard.release('a')aq
 	else:
-		keyboard.press('d')
+		keyboard.press('d')d 
 		time.sleep(SHORT_TURN_TIME)
 		keyboard.release('d')
-
-def move(isTop, isBottom, moving, poly_left, poly_right, distance, distancePast, frame_width):
-	if (isTop):
+    '''
+def move(isTop, isBottom, moving, poly_left, poly_right, height, width):
+	'''
+    if (isTop):
 		stop()
 		moving = False
 		return
-	adjust_direction(poly_left, poly_right, frame_width)
-	if (distancePast > distance):
+    '''
+	adjust_direction(poly_left, poly_right, height, width)
+	'''
+    if (distancePast > distance):
 		keyboard.press(Key.space)
 		time.sleep(SHORT_BRAKE_TIME)
 		keyboard.release(Key.space)
@@ -109,12 +146,13 @@ def move(isTop, isBottom, moving, poly_left, poly_right, distance, distancePast,
 		time.sleep(SHORT_ACCEL_TIME)
 		keyboard.release('w')
 		speedTime += SHORT_ACCEL_TIME
+    '''
 
 def stop():
-	keyboard.press(Key.space)
+	keyboard.press('s')
 	time.sleep(speedTime + STOP_TIME_BUFFER)
-	keyboard.release(Key.space)
-
+	keyboard.release('s')
+'''
 def captureVideo(nameofthevideo):
     fourcc = cv2.VideoWriter_fourcc(*'DIVX')
     out = cv2.VideoWriter(nameofthevideo,fourcc, 20.0, (1920,1080))
@@ -128,41 +166,88 @@ def captureVideo(nameofthevideo):
             break
     out.release()
     cv2.destroyAllWindows()
+'''
+def straight():
+    PressKey(W)
+    ReleaseKey(A)
+    ReleaseKey(D)
+
+def left():
+    PressKey(A)
+    ReleaseKey(W)
+    ReleaseKey(D)
+    ReleaseKey(A)
+
+def right():
+    PressKey(D)
+    ReleaseKey(A)
+    ReleaseKey(W)
+    ReleaseKey(D)
+
+def slow_ya_roll():
+    ReleaseKey(W)
+    ReleaseKey(A)
+    ReleaseKey(D)
+
+def main():
+    keyboard=Controller()
+    '''
+    fourcc = cv2.VideoWriter_fourcc(*'DIVX')
+    out = cv2.VideoWriter("test1.mp4",fourcc, 20.0, (1920,1080))
+    while True:
+        monitor = mss().monitors[1]
+        sct_img = mss().grab(monitor)
+        cv2.waitKey(10)
+        img = Image.frombytes('RGB', sct_img.size, sct_img.bgra, 'raw', 'BGRX')
+        img = np.array(img)
+		#main(img, net, meta)
+	
+    	#cap = cv2.VideoCapture('pov.mp4')
+	    #while(cap.isOpened()):
+		#ret, frame = cap.read()
+        
+        poly_left, poly_right, lane_detection_image = main_lane(img)
+        cv2.imshow('frame',lane_detection_image)
+        out.write(lane_detection_image)
+        move(False, False, False, poly_left, poly_right,img.shape[0], img.shape[1])
+		# trafficlights = traffic_data(frame);
+        # print(trafficlights)
+        
+        if cv2.waitKey(1) & 0xFF == ord('q'):
+            break
+    out.release()
+    cv2.destroyAllWindows()
+    '''
+    
+        
+        
+		
 
 if __name__ == "__main__":
-	# specify absolute pathes if not working
-	net = dn.load_net("vision/object_detection/darknet/cfg/yolov3.cfg".encode("utf-8"), "vision/object_detection/darknet/yolov3.weights".encode("utf-8"), 0)
-	meta = dn.load_meta("vision/object_detection/darknet/cfg/coco.data".encode("utf-8"))
-	
-	# numpy array example on a single image
-	image = cv2.imread("vision/object_detection/darknet/data/dog.jpg")
-	print(pedestrians_and_cars(image, net, meta))
-
-	while True:
-		monitor = mss().monitors[1]
-		sct_img = mss().grab(monitor)
-		img = Image.frombytes('RGB', sct_img.size, sct_img.bgra, 'raw', 'BGRX')
-		img = np.array(img)
-		main(img, net, meta)
-	'''
-	cap = cv2.VideoCapture('Test_Video.mp4')
-	while(cap.isOpened()):
-		ret, frame = cap.read()
-		boxes = main(frame, net, meta)
-
-		print('\n')
-		print('\n')
-
-		for box in boxes:
-			print(box[0])
-
-		print('\n')
-		print('\n')
-
-		cv2.imshow('frame',frame)
-		if cv2.waitKey(1) & 0xFF == ord('q'):
-			break
-		
-		cap.release()
-		cv2.destroyAllWindows()
-	'''
+    for i in range(5):
+        print(i+1)
+        time.sleep(1)
+    fourcc = cv2.VideoWriter_fourcc(*'DIVX')
+    out = cv2.VideoWriter("test1.mp4",fourcc, 20.0, (1920,1080))
+    while True:
+        
+        screen =  np.array(ImageGrab.grab())
+		#main(img, net, meta)
+        #cap = cv2.VideoCapture('pov.mp4')
+	    #while(cap.isOpened()):
+		#ret, frame = cap.read()
+        
+        poly_left, poly_right, lane_detection_image = main_lane(screen)
+        #cv2.imshow('frame',lane_detection_image)
+        out.write(lane_detection_image)
+        #move(False, False, False, poly_left, poly_right,img.shape[0], img.shape[1])
+		# trafficlights = traffic_data(frame);
+        # print(trafficlights)
+        
+        if cv2.waitKey(1) & 0xFF == ord('q'):
+            break
+    out.release()
+    cv2.destroyAllWindows()
+      
+    
+        
