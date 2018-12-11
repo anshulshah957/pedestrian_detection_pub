@@ -21,6 +21,12 @@ We are in the process of integrating these detection algorithms to implement a "
 `make`  
 * download [pre-trained weight file](https://pjreddie.com/media/files/yolov3.weights) to darknet directory
 
+### Traffic Light Detection Demo
+* 'cd vision/traffic_light'
+* open 'trafficLight.py'
+* add filename you want to test in line 65
+* 'python3 trafficLight.py'
+
 ## Authors
 Ananmay Jain (project manager)  
 Tim Baer  
