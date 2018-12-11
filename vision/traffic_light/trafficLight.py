@@ -58,8 +58,22 @@ def getCircle(img):
 	# cv2.waitKey(0)
 	# cv2.destroyAllWindows()
 
-#img = cv2.imread('GTARed1.jpg',1)
+#img = cv2.imread('GTAYellowAndRed1.jpg',1)
 #print(getCircle(img))
+if __name__ == "__main__":
+	img = cv2.imread('GTARed1.jpg', 1)
+	cv2.imshow("input", img)
+	cv2.waitKey(0)
+	toPrint = getCircle(img)
+	cv2.destroyAllWindows
+	if (toPrint == 240):
+		print("RED")
+	if (toPrint == 160):
+		print("GREEN")
+	if (toPrint == 80):
+		print("YELLOW")
+	if (toPrint == 0):
+		print("NO LIGHT")
 
 
 
