@@ -16,6 +16,7 @@ if __name__ == "__main__":
 	image = cv2.imread("vision/object_detection/darknet/data/dog.jpg")
 	
 	result = pedestrians_and_cars(image, net, meta)
+	print(result)
 
 	f = open("output.txt", "w")
 	f.write(repr(result))
